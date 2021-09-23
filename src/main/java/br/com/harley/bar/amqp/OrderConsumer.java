@@ -14,11 +14,9 @@ import br.com.harley.bar.service.OrderService;
 public class OrderConsumer {
 
     OrderService orderService;
-    RabbitTemplate rabbitTemplate;
 
-    public OrderConsumer(OrderService orderService, RabbitTemplate rabbitTemplate) {
+    public OrderConsumer(OrderService orderService) {
         this.orderService = orderService;
-        this.rabbitTemplate = rabbitTemplate;
     }
 
     @RabbitListener(queues = RabbitConfig.QUEUE_TO_BAR)
@@ -26,7 +24,6 @@ public class OrderConsumer {
         Logger logger = LoggerFactory.getLogger(OrderConsumer.class);
         logger.info("Recebido pedido de Bar do pedido: ".concat(order.getOrderId()));
         orderService.addOrder(order);
-        rabbitTemplate.convertAndSend(RabbitConfig.EXCHANGE_NAME, RabbitConfig.ROUTING_KEY_BAR_TO_ORDER, order);
     }
 
 }
